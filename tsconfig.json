@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    /* File Layout */
+    "rootDir": "./src" /* Tells TS to look inside your src folder */,
+    "outDir": "./dist" /* Tells TS to output compiled JS here */,
+
+    /* Environment Settings */
+    "module": "ESNext" /* Required for Type Module / ES Modules */,
+    "moduleResolution": "bundler" /* Ensures imports look for .js extensions */,
+    "target": "ES2022" /* Stable modern JS target for modern Node.js */,
+
+    /* Stricter Typechecking Options */
+    "strict": true /* Enables all strict type-checking options */,
+    "noUncheckedIndexedAccess": true /* Keeps your excellent strict array/object lookup check */,
+    "exactOptionalPropertyTypes": true /* Ensures undefined isn't accidentally passed to optional fields */,
+
+    /* Other Outputs */
+    "sourceMap": true /* Helps you debug TS code in production/logs */,
+    "declaration": true /* Generates corresponding '.d.ts' file */,
+    "declarationMap": true /* Creates a map for your declaration files */,
+
+    /* Recommended Options */
+    "verbatimModuleSyntax": true /* Ensures clean ESM import/export drops at runtime */,
+    "isolatedModules": true /* Safely transpiles single files */,
+    "moduleDetection": "force" /* Treats all files as modules */,
+    "skipLibCheck": true /* Prevents type-checking errors from node_modules */
+  },
+  "include": ["src/**/*"] /* Tells TS to only compile things inside src */
+}
