@@ -1,0 +1,671 @@
+🚀 PharmaSuite API listening on http://localhost:5000
+2:23:54 pm [tsx] change in ./src\routes\product.routes.ts Restarting...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\product.routes.ts:54:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+2:23:59 pm [tsx] change in ./src\services\product.service.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\product.routes.ts:54:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+2:24:07 pm [tsx] change in ./src\services\product.service.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\product.routes.ts:54:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+2:24:12 pm [tsx] change in ./src\services\product.service.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\product.routes.ts:54:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+2:24:18 pm [tsx] change in ./src\controllers\product.controller.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\product.routes.ts:54:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+2:24:26 pm [tsx] change in ./src\controllers\product.controller.ts Rerunning...
+file:///D:/websites%20designs/pharmacy%20management/back-end/src/controllers/product.controller.ts:1
+var __defProp=Object.defineProperty;var __name=(target,value)=>__defProp(target,"name",{value,configurable:true});import{listProducts,getProduct,createProduct,updateProduct,deleteProduct,listCategories,createCategory}from"../services/product.service";import{ok}from"../utils/api";async function listCategories(req,res,next){try{const data=await listCategories_(req.user.organizationId);return ok(res,data)}catch(e){next(e)}}__name(listCategories,"listCategories");async function createCategory(req,res,next){try{const data=await createCategory_(req.user.organizationId,req.body.name);return ok(res,data,"Category created.",201)}catch(e){next(e)}}__name(createCategory,"createCategory");async function list(req,res,next){try{const org=req.user.organizationId;const q=req.cleanQuery??req.query;const data=await listProducts({organizationId:org,search:q.search,categoryId:q.categoryId,prescriptionRequired:q.prescriptionRequired==="true"?true:q.prescriptionRequired==="false"?false:void 0,page:Number(q.page??1),pageSize:Number(q.pageSize??20)});return ok(res,data)}catch(e){next(e)}}__name(list,"list");async function getOne(req,res,next){try{const data=await getProduct(req.user.organizationId,req.params.id);return ok(res,data)}catch(e){next(e)}}__name(getOne,"getOne");async function create(req,res,next){try{const data=await createProduct(req.user.organizationId,req.body);return ok(res,data,"Product created.",201)}catch(e){next(e)}}__name(create,"create");async function update(req,res,next){try{const data=await updateProduct(req.user.organizationId,req.params.id,req.body);return ok(res,data,"Product updated.")}catch(e){next(e)}}__name(update,"update");async function remove(req,res,next){try{await deleteProduct(req.user.organizationId,req.params.id);return ok(res,null,"Product deleted.")}catch(e){next(e)}}__name(remove,"remove");export{create,createCategory,getOne,list,listCategories,remove,update};
+                                                                                                                                                                                                                                                                                        ^
+
+SyntaxError: Identifier 'listCategories' has already been declared
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:111:18)
+    at #translate (node:internal/modules/esm/loader:473:20)
+    at afterLoad (node:internal/modules/esm/loader:529:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:534:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:571:36)
+    at afterResolve (node:internal/modules/esm/loader:624:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:630:12)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:228:17)
+
+Node.js v24.13.0
+2:24:29 pm [tsx] change in ./src\controllers\product.controller.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:24:33 pm [tsx] change in ./src\controllers\product.controller.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:24:47 pm [tsx] change in ./src\services\inventory.service.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:24:50 pm [tsx] change in ./src\services\inventory.service.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:24:53 pm [tsx] change in ./src\controllers\inventory.controller.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:25:47 pm [tsx] change in ./src\controllers\inventory.controller.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:25:55 pm [tsx] change in ./src\routes\inventory.routes.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:26:02 pm [tsx] change in ./src\routes\inventory.routes.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+2:26:18 pm [tsx] change in ./src\services\product.service.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+3:36:09 pm [tsx] change in ./src\domain\permissions.ts Rerunning...
+3:36:12 pm [tsx] change in ./src\domain\permissions.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:38:02 pm [tsx] change in ./src\services\supplier.service.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:38:53 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:284:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:39:58 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:285:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:40:06 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:285:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:40:09 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:285:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:40:11 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:284:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:40:22 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\purchase.service.ts:285:68: ERROR: Cannot use "||" with "??" without parentheses
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+3:41:15 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:41:19 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:41:24 pm [tsx] change in ./src\services\purchase.service.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+3:42:49 pm [tsx] change in ./src\controllers\purchase.controller.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+3:42:54 pm [tsx] change in ./src\routes\purchase.routes.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+3:43:01 pm [tsx] change in ./src\controllers\supplier.controller.ts Restarting...
+🚀 PharmaSuite API listening on http://localhost:5000
+3:43:06 pm [tsx] change in ./src\controllers\supplier.controller.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:43:08 pm [tsx] change in ./src\routes\supplier.routes.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:43:41 pm [tsx] change in ./src\services\purchase-analytics.service.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+3:44:04 pm [tsx] change in ./src\services\purchase-analytics.service.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+4:03:51 pm [tsx] change in ./src\domain\permissions.ts Rerunning...
+4:03:53 pm [tsx] change in ./src\domain\permissions.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:04:54 pm [tsx] change in ./src\services\customer.service.ts Rerunning...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+D:\websites designs\pharmacy management\back-end\src\services\customer.service.ts:129:22: ERROR: Multiple exports with the same name "createSale"
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+4:05:02 pm [tsx] change in ./src\services\customer.service.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+4:05:22 pm [tsx] change in ./src\routes\index.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:05:26 pm [tsx] change in ./src\routes\index.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:05:39 pm [tsx] change in ./src\services\sale.service.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+4:09:13 pm [tsx] change in ./src\services\sale.service.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:09:20 pm [tsx] change in ./src\services\sale.service.ts Rerunning...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:09:26 pm [tsx] change in ./src\routes\sale.routes.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\sale.routes.ts:45:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+4:09:30 pm [tsx] change in ./src\controllers\sale.controller.ts Rerunning...
+D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216
+        throw new Error(msg);
+              ^
+
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\route.js:216:15)
+    at proto.<computed> [as get] (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\router\index.js:521:19)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\routes\sale.routes.ts:45:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0
+4:09:38 pm [tsx] change in ./src\controllers\sale.controller.ts Rerunning...
+file:///D:/websites%20designs/pharmacy%20management/back-end/src/controllers/sale.controller.ts:1
+var __defProp=Object.defineProperty;var __name=(target,value)=>__defProp(target,"name",{value,configurable:true});import{createSale,listSales,getSale,returnSale,listSaleReturns,salesSummary,posLookup}from"../services/sale.service";import{ok}from"../utils/api";async function create(req,res,next){try{const data=await createSale(req.user.organizationId,req.user.userId,req.body);return ok(res,data,"Sale completed.",201)}catch(e){next(e)}}__name(create,"create");async function list(req,res,next){try{const data=await listSales({organizationId:req.user.organizationId,branchId:req.query.branchId||req.user?.branchId,customerId:req.query.customerId,status:req.query.status,search:req.query.search,from:req.query.from,to:req.query.to,page:Number(req.query.page??1),pageSize:Number(req.query.pageSize??20)});return ok(res,data)}catch(e){next(e)}}__name(list,"list");async function getOne(req,res,next){try{const data=await getSale(req.user.organizationId,req.params.id);return ok(res,data)}catch(e){next(e)}}__name(getOne,"getOne");async function returnGoods(req,res,next){try{const data=await returnSale(req.user.organizationId,req.params.id,req.user.userId,req.body.items);return ok(res,data,"Sale return recorded and stock restored.",201)}catch(e){next(e)}}__name(returnGoods,"returnGoods");async function returns(req,res,next){try{const data=await listSaleReturns({organizationId:req.user.organizationId,branchId:req.query.branchId||req.user?.branchId,page:Number(req.query.page??1),pageSize:Number(req.query.pageSize??20)});return ok(res,data)}catch(e){next(e)}}__name(returns,"returns");async function summary(req,res,next){try{const data=await salesSummary({organizationId:req.user.organizationId,branchId:req.query.branchId||req.user?.branchId});return ok(res,data)}catch(e){next(e)}}__name(summary,"summary");async function posLookup(req,res,next){try{const data=await posLookupService({organizationId:req.user.organizationId,branchId:req.query.branchId||req.user?.branchId||"",search:req.query.search??"",limit:Number(req.query.pageSize??25)});return ok(res,data)}catch(e){next(e)}}__name(posLookup,"posLookup");export{create,getOne,list,posLookup,returnGoods,returns,summary};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
+SyntaxError: Identifier 'posLookup' has already been declared
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:111:18)
+    at #translate (node:internal/modules/esm/loader:473:20)
+    at afterLoad (node:internal/modules/esm/loader:529:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:534:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:571:36)
+    at afterResolve (node:internal/modules/esm/loader:624:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:630:12)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:228:17)
+
+Node.js v24.13.0
+4:09:42 pm [tsx] change in ./src\controllers\sale.controller.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000
+4:40:29 pm [tsx] change in ./src\services\sale.service.ts Restarting...
+4:40:33 pm [tsx] change in ./src\services\sale.service.ts Restarting...
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 2 errors:
+D:\websites designs\pharmacy management\back-end\src\services\sale.service.ts:198:10: ERROR: The symbol "subtotal" has already been declared
+D:\websites designs\pharmacy management\back-end\src\services\sale.service.ts:200:10: ERROR: The symbol "tax" has already been declared
+    at failureErrorWithLog (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1748:15)
+    at D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:1017:50
+    at responseCallbacks.<computed> (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:884:9)
+    at handleIncomingPacket (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:939:12)
+    at Socket.readFromStdout (D:\websites designs\pharmacy management\back-end\node_modules\esbuild\lib\main.js:862:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.13.0
+4:40:37 pm [tsx] change in ./src\services\sale.service.ts Rerunning...
+4:40:40 pm [tsx] change in ./src\services\sale.service.ts Restarting...
+4:40:45 pm [tsx] change in ./src\services\sale.service.ts Restarting...
+4:40:49 pm [tsx] change in ./src\routes\sale.routes.ts Restarting...
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at app.listen (D:\websites designs\pharmacy management\back-end\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (D:\websites designs\pharmacy management\back-end\src\server.ts:76:5)
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v24.13.0
+4:40:53 pm [tsx] change in ./src\routes\customer.routes.ts Rerunning...
+🚀 PharmaSuite API listening on http://localhost:5000

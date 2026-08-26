@@ -1,0 +1,857 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  OWNER
+  MANAGER
+  PHARMACIST
+  STAFF
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum PurchaseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  RECEIVED
+  PARTIALLY_RECEIVED
+  COMPLETED
+  CANCELLED
+}
+
+enum MovementType {
+  PURCHASE
+  SALE
+  SALE_RETURN
+  PURCHASE_RETURN
+  ADJUSTMENT
+  TRANSFER_IN
+  TRANSFER_OUT
+  OPENING_STOCK
+  EXPIRED
+  DAMAGED
+}
+
+enum AlertType {
+  LOW_STOCK
+  STOCKOUT_RISK
+  EXPIRY
+  DEAD_STOCK
+  PRICE_VARIANCE
+  PENDING_PURCHASE
+  SYSTEM
+}
+
+enum AlertSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum AlertStatus {
+  ACTIVE
+  READ
+  DISMISSED
+}
+
+enum SaleStatus {
+  PAID
+  DUE
+  PARTIAL_RETURN
+  RETURNED
+  VOID
+}
+
+enum PaymentMode {
+  CASH
+  UPI
+  CARD
+  BANK_TRANSFER
+  CREDIT
+}
+
+enum PrescriptionStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum QualityCheckType {
+  RECEIPT_INSPECTION
+  STORAGE_CONDITION
+  EXPIRY_VERIFICATION
+  LABEL_VERIFICATION
+  ROUTINE_INSPECTION
+}
+
+enum QualityControlStatus {
+  PENDING
+  PASSED
+  FAILED
+  QUARANTINED
+  RELEASED
+  DISPOSED
+}
+
+enum SubscriptionTier {
+  TRIAL_14_DAYS
+  BASIC
+  STANDARD
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  PENDING_VERIFICATION
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELLED
+}
+
+enum BillingCycle {
+  MONTHLY
+  ANNUAL
+}
+
+enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+enum JournalStatus {
+  POSTED
+  VOID
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  SUBSCRIPTION_UPDATED
+  PAYMENT_VERIFIED
+  PRODUCT_CREATED
+  PRODUCT_UPDATED
+  BATCH_CREATED
+  STOCK_ADJUSTED
+  PURCHASE_CREATED
+  PURCHASE_UPDATED
+  PURCHASE_SUBMITTED
+  PURCHASE_CANCELLED
+  PURCHASE_APPROVED
+  PURCHASE_RECEIVED
+  PURCHASE_RETURNED
+  CUSTOMER_CREATED
+  SALE_CREATED
+  SALE_RETURNED
+  PRESCRIPTION_UPLOADED
+  USER_CREATED
+  USER_UPDATED
+  ORGANIZATION_UPDATED
+  SETTINGS_CHANGED
+  PASSWORD_RESET
+  PASSWORD_CHANGED
+  JOURNAL_POSTED
+  JOURNAL_VOIDED
+  ACCOUNT_CREATED
+  ACCOUNT_UPDATED
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  gstin       String?
+  address     String?
+  currency    String   @default("INR")
+  timezone    String   @default("Asia/Kolkata")
+  isActive    Boolean  @default(true)
+  settings    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  branches    Branch[]
+  users       User[]
+  products    Product[]
+  categories  ProductCategory[]
+  suppliers   Supplier[]
+  vendorMedicines VendorMedicine[]
+  customers   Customer[]
+  batches     Batch[]
+  movements   InventoryMovement[]
+  purchases   Purchase[]
+  receipts    PurchaseReceipt[]
+  sales       Sale[]
+  prescriptions Prescription[]
+  alerts      Alert[]
+  qualityChecks QualityControlCheck[]
+  auditLogs   AuditLog[]
+  subscription Subscription?
+  payments    PaymentRecord[]
+  accounts    Account[]
+  journalEntries JournalEntry[]
+}
+
+model Subscription {
+  id              String             @id @default(uuid())
+  organizationId  String             @unique
+  tier            SubscriptionTier   @default(TRIAL_14_DAYS)
+  status          SubscriptionStatus @default(TRIALING)
+  billingCycle    BillingCycle       @default(MONTHLY)
+
+  trialStartsAt   DateTime           @default(now())
+  trialEndsAt     DateTime
+  currentPeriodStart DateTime        @default(now())
+  currentPeriodEnd   DateTime
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  organization    Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payments        PaymentRecord[]
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model PaymentRecord {
+  id              String             @id @default(uuid())
+  subscriptionId  String
+  organizationId  String
+  amount          Decimal            @db.Decimal(12, 2)
+  paymentMode     PaymentMode
+  transactionRef  String?
+  proofUrl        String?
+  verifiedById    String?
+  verifiedAt      DateTime?
+  status          SaleStatus
+  notes           String?
+  createdAt       DateTime           @default(now())
+
+  subscription    Subscription       @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  organization    Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([subscriptionId])
+}
+
+model Branch {
+  id            String   @id @default(uuid())
+  organizationId String
+  name          String
+  code          String
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  users         User[]
+  batches       Batch[]
+  purchases     Purchase[]
+  receipts      PurchaseReceipt[]
+  sales         Sale[]
+  prescriptions Prescription[]
+  movements     InventoryMovement[]
+  alerts        Alert[]
+  qualityChecks QualityControlCheck[]
+  auditLogs     AuditLog[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+}
+
+model User {
+  id              String     @id @default(uuid())
+  organizationId  String
+  branchId        String?
+  email           String
+  passwordHash    String
+  fullName        String
+  phone           String?
+  role            Role       @default(STAFF)
+  status          UserStatus @default(ACTIVE)
+  permissionClaims String[]  @default([])
+  refreshTokenHash String?
+  lastLoginAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?      @relation(fields: [branchId], references: [id])
+  createdSales   Sale[]       @relation("SaleCreator")
+  createdPurchases Purchase[] @relation("PurchaseCreator")
+  receivedReceipts PurchaseReceipt[] @relation("ReceiptReceiver")
+  uploadedPrescriptions Prescription[] @relation("PrescriptionUploader")
+  createdJournals JournalEntry[] @relation("JournalCreator")
+  movements      InventoryMovement[]
+  qualityChecks  QualityControlCheck[]
+  auditLogs      AuditLog[]
+  alertsRead     AlertRead[]
+  passwordResets PasswordReset[]
+
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@index([branchId])
+}
+
+model PasswordReset {
+  id                  String    @id @default(uuid())
+  userId              String
+  otpHash             String
+  expiresAt           DateTime
+  attempts            Int       @default(0)
+  verifiedAt          DateTime?
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
+  resetTokenUsedAt    DateTime?
+  usedAt              DateTime?
+  createdAt           DateTime  @default(now())
+
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([resetTokenHash])
+}
+
+model ProductCategory {
+  id            String       @id @default(uuid())
+  organizationId String
+  name          String
+  createdAt     DateTime     @default(now())
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  products      Product[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+}
+
+model Product {
+  id                  String   @id @default(uuid())
+  organizationId      String
+  categoryId          String?
+  brand               String
+  genericName         String?
+  manufacturer        String?
+  strength            String?
+  dosageForm          String?
+  packSize            String?
+  barcode             String?
+  hsnCode             String?
+  gstRate             Decimal  @default(0) @db.Decimal(6, 2)
+  prescriptionRequired Boolean @default(false)
+  // Canonical packaging configuration. All stock quantities on Batch are stored
+  // in the canonical BASE unit (e.g. tablet). Structure:
+  //   { baseUnit, saleUnit, saleUnitFactor, levels: [{name, factor}] }
+  // where factor = number of base units in one unit of that level.
+  unitConfig          Json     @default("{}")
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  deletedAt           DateTime?
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category     ProductCategory? @relation(fields: [categoryId], references: [id])
+  batches      Batch[]
+  movements    InventoryMovement[]
+  saleItems    SaleItem[]
+  purchaseItems PurchaseItem[]
+  vendorMedicines VendorMedicine[]
+  receiptItems PurchaseReceiptItem[]
+
+  @@unique([organizationId, barcode])
+  @@index([organizationId])
+  @@index([categoryId])
+  @@index([brand])
+  @@index([genericName])
+}
+
+model Supplier {
+  id            String       @id @default(uuid())
+  organizationId String
+  code          String?
+  name          String
+  contactPerson String?
+  phone         String?
+  email         String?
+  gstin         String?
+  address       String?
+  paymentTerms  String?
+  leadTimeDays  Int?         @default(7)
+  rating        Decimal?     @default(0) @db.Decimal(3, 2)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batches        Batch[]
+  purchases      Purchase[]
+  vendorMedicines VendorMedicine[]
+  receipts       PurchaseReceipt[]
+
+  @@index([organizationId])
+  @@index([code])
+}
+
+model VendorMedicine {
+  id                 String   @id @default(uuid())
+  organizationId     String
+  vendorId           String
+  productId          String
+  lastPurchasePrice  Decimal? @db.Decimal(12, 2)
+  lastPurchaseDate   DateTime?
+  typicalLeadTime    Int?
+  isPreferred        Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor       Supplier     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, vendorId, productId])
+  @@index([organizationId])
+  @@index([vendorId])
+  @@index([productId])
+}
+
+model Batch {
+  id            String       @id @default(uuid())
+  organizationId String
+  branchId      String
+  productId     String
+  supplierId    String?
+  batchNumber   String
+  expiryDate    DateTime
+  purchasePrice Decimal      @default(0) @db.Decimal(12, 2)
+  mrp           Decimal      @default(0) @db.Decimal(12, 2)
+  sellingPrice  Decimal      @default(0) @db.Decimal(12, 2)
+  quantity      Int          @default(0)
+  openingQuantity Int?       @default(0)
+  reorderLevel  Int          @default(0)
+  receivedAt    DateTime     @default(now())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  product      Product      @relation(fields: [productId], references: [id])
+  supplier     Supplier?    @relation(fields: [supplierId], references: [id])
+  movements    InventoryMovement[]
+  saleItems    SaleItem[]
+  qualityChecks QualityControlCheck[]
+
+  @@unique([organizationId, branchId, productId, batchNumber])
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([productId])
+  @@index([expiryDate])
+  @@index([supplierId])
+}
+
+model QualityControlCheck {
+  id            String              @id @default(uuid())
+  organizationId String
+  branchId      String
+  batchId       String
+  checkType     QualityCheckType
+  status        QualityControlStatus @default(PENDING)
+  condition     String?
+  temperatureC  Decimal?            @db.Decimal(5, 2)
+  passedItems   String[]            @default([])
+  failedItems   String[]            @default([])
+  notes         String?
+  decisionNote  String?
+  conductedById String?
+  performedAt   DateTime            @default(now())
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  batch        Batch        @relation(fields: [batchId], references: [id])
+  conductedBy  User?        @relation(fields: [conductedById], references: [id])
+
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([batchId])
+  @@index([status])
+  @@index([performedAt])
+}
+
+model InventoryMovement {
+  id            String       @id @default(uuid())
+  organizationId String
+  branchId      String
+  productId     String
+  batchId       String?
+  type          MovementType
+  quantity      Int
+  beforeQty     Int          @default(0)
+  afterQty      Int          @default(0)
+  unitCost      Decimal      @default(0) @db.Decimal(12, 2)
+  referenceType String?
+  referenceId   String?
+  note          String?
+  userId        String?
+  createdAt     DateTime     @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  product      Product      @relation(fields: [productId], references: [id])
+  batch        Batch?       @relation(fields: [batchId], references: [id])
+  user         User?        @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([productId])
+  @@index([batchId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Purchase {
+  id            String       @id @default(uuid())
+  poNumber      String
+  organizationId String
+  branchId      String
+  supplierId    String
+  status        PurchaseStatus @default(DRAFT)
+  orderDate     DateTime     @default(now())
+  expectedDelivery DateTime?
+  receivedAt    DateTime?
+  supplierInvoiceNumber String?
+  invoiceDate   DateTime?
+  subtotal      Decimal      @default(0) @db.Decimal(12, 2)
+  discount      Decimal      @default(0) @db.Decimal(12, 2)
+  tax           Decimal      @default(0) @db.Decimal(12, 2)
+  total         Decimal      @default(0) @db.Decimal(12, 2)
+  notes         String?
+  createdById   String?
+  approvedById  String?
+  approvedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  supplier     Supplier     @relation(fields: [supplierId], references: [id])
+  createdBy    User?        @relation("PurchaseCreator", fields: [createdById], references: [id])
+  items        PurchaseItem[]
+  receipts     PurchaseReceipt[]
+
+  @@unique([organizationId, poNumber])
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([supplierId])
+  @@index([status])
+  @@index([orderDate])
+}
+
+model PurchaseItem {
+  id          String       @id @default(uuid())
+  purchaseId  String
+  productId   String
+  batchNumber String?
+  quantity    Int
+  freeQuantity Int         @default(0)
+  purchasePrice Decimal   @default(0) @db.Decimal(12, 2)
+  mrp         Decimal      @default(0) @db.Decimal(12, 2)
+  sellingPrice Decimal?    @db.Decimal(12, 2)
+  gstRate     Decimal      @default(0) @db.Decimal(6, 2)
+  discount    Decimal      @default(0) @db.Decimal(12, 2)
+  expiryDate  DateTime?
+  total       Decimal      @default(0) @db.Decimal(12, 2)
+  receivedQty Int          @default(0)
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+  receiptItems PurchaseReceiptItem[]
+
+  @@index([purchaseId])
+  @@index([productId])
+}
+
+model PurchaseReceipt {
+  id            String   @id @default(uuid())
+  organizationId String
+  purchaseId    String
+  branchId      String
+  supplierId    String
+  receiptNumber String
+  receivedById  String?
+  receivedAt    DateTime @default(now())
+  notes         String?
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  purchase     Purchase          @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  branch       Branch            @relation(fields: [branchId], references: [id])
+  supplier     Supplier          @relation(fields: [supplierId], references: [id])
+  receivedBy   User?             @relation("ReceiptReceiver", fields: [receivedById], references: [id])
+  items        PurchaseReceiptItem[]
+
+  @@unique([organizationId, receiptNumber])
+  @@index([organizationId])
+  @@index([purchaseId])
+  @@index([branchId])
+  @@index([supplierId])
+}
+
+model PurchaseReceiptItem {
+  id             String   @id @default(uuid())
+  receiptId      String
+  purchaseItemId String
+  productId      String
+  quantity       Int
+  freeQuantity   Int      @default(0)
+  batchNumber    String
+  expiryDate     DateTime
+  purchasePrice  Decimal  @default(0) @db.Decimal(12, 2)
+  mrp            Decimal  @default(0) @db.Decimal(12, 2)
+  sellingPrice   Decimal? @db.Decimal(12, 2)
+
+  receipt      PurchaseReceipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  purchaseItem PurchaseItem    @relation(fields: [purchaseItemId], references: [id])
+  product      Product         @relation(fields: [productId], references: [id])
+
+  @@index([receiptId])
+  @@index([purchaseItemId])
+  @@index([productId])
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  organizationId String
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sales         Sale[]
+  prescriptions Prescription[]
+
+  @@index([organizationId])
+  @@index([phone])
+}
+
+model Prescription {
+  id            String   @id @default(uuid())
+  organizationId String
+  branchId      String?
+  customerId    String
+  doctorName    String?
+  prescriptionDate DateTime @default(now())
+  notes         String?
+  status        PrescriptionStatus @default(ACTIVE)
+  fileName      String
+  filePath      String
+  mimeType      String?
+  fileSize      Int?
+  uploadedById  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id])
+  customer     Customer     @relation(fields: [customerId], references: [id])
+  uploader     User?        @relation("PrescriptionUploader", fields: [uploadedById], references: [id])
+
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([branchId])
+}
+
+model Sale {
+  id            String   @id @default(uuid())
+  invoiceNo     String
+  clientSaleId  String?  @unique
+  organizationId String
+  branchId      String
+  customerId    String?
+  status        SaleStatus @default(PAID)
+  paymentMode   PaymentMode @default(CASH)
+  subtotal      Decimal  @default(0) @db.Decimal(12, 2)
+  discount      Decimal  @default(0) @db.Decimal(12, 2)
+  tax           Decimal  @default(0) @db.Decimal(12, 2)
+  total         Decimal  @default(0) @db.Decimal(12, 2)
+  createdById   String?
+  createdAt     DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  customer     Customer?    @relation(fields: [customerId], references: [id])
+  createdBy    User?        @relation("SaleCreator", fields: [createdById], references: [id])
+  items        SaleItem[]
+
+  @@unique([organizationId, invoiceNo])
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([customerId])
+  @@index([createdAt])
+}
+
+model SaleItem {
+  id         String   @id @default(uuid())
+  saleId     String
+  productId  String
+  batchId    String?
+  quantity   Int
+  returnedQty Int      @default(0)
+  unitPrice  Decimal  @default(0) @db.Decimal(12, 2)
+  unitCost   Decimal? @db.Decimal(12, 2)
+  gstRate    Decimal  @default(0) @db.Decimal(6, 2)
+  total      Decimal  @default(0) @db.Decimal(12, 2)
+
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  batch   Batch?  @relation(fields: [batchId], references: [id])
+
+  @@index([saleId])
+  @@index([productId])
+  @@index([batchId])
+}
+
+model Alert {
+  id            String       @id @default(uuid())
+  organizationId String
+  branchId      String?
+  type          AlertType
+  severity      AlertSeverity
+  status        AlertStatus  @default(ACTIVE)
+  title         String
+  message       String
+  entityType    String?
+  entityId      String?
+  metadata      Json         @default("{}")
+  createdAt     DateTime     @default(now())
+  acknowledgedAt DateTime?
+  acknowledgedById String?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id])
+  readBy       AlertRead[]
+
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AlertRead {
+  id        String   @id @default(uuid())
+  alertId   String
+  userId    String
+  readAt    DateTime @default(now())
+
+  alert  Alert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  user   User  @relation(fields: [userId], references: [id])
+
+  @@unique([alertId, userId])
+  @@index([userId])
+}
+
+model Account {
+  id             String      @id @default(uuid())
+  organizationId String
+  code           String
+  name           String
+  type           AccountType
+  parentId       String?
+  isActive       Boolean     @default(true)
+  // Debit-positive for ASSET/EXPENSE, credit-positive for LIABILITY/EQUITY/REVENUE.
+  openingBalance Decimal     @default(0) @db.Decimal(14, 2)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent       Account?     @relation("AccountTree", fields: [parentId], references: [id])
+  children     Account[]    @relation("AccountTree")
+  lines        JournalEntryLine[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@index([parentId])
+}
+
+model JournalEntry {
+  id             String        @id @default(uuid())
+  organizationId String
+  referenceNo    String
+  entryDate      DateTime      @default(now())
+  description    String
+  status         JournalStatus @default(POSTED)
+  createdById    String?
+  createdAt      DateTime      @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("JournalCreator", fields: [createdById], references: [id])
+  lines        JournalEntryLine[]
+
+  @@unique([organizationId, referenceNo])
+  @@index([organizationId])
+  @@index([entryDate])
+  @@index([status])
+}
+
+model JournalEntryLine {
+  id             String @id @default(uuid())
+  journalEntryId String
+  accountId      String
+  debit          Decimal @default(0) @db.Decimal(14, 2)
+  credit         Decimal @default(0) @db.Decimal(14, 2)
+  narration      String?
+
+  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account      Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([journalEntryId])
+  @@index([accountId])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  organizationId String
+  branchId      String?
+  userId        String?
+  action        AuditAction
+  entityType    String?
+  entityId      String?
+  metadata      Json     @default("{}")
+  createdAt     DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id])
+  user         User?        @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([entityType])
+  @@index([createdAt])
+}
