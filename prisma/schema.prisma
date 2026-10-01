@@ -142,6 +142,7 @@ enum JournalStatus {
 
 enum AuditAction {
   LOGIN
+  LOGIN_FAILED
   LOGOUT
   SUBSCRIPTION_UPDATED
   PAYMENT_VERIFIED
@@ -165,7 +166,12 @@ enum AuditAction {
   ORGANIZATION_UPDATED
   SETTINGS_CHANGED
   PASSWORD_RESET
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
   PASSWORD_CHANGED
+  TOKEN_REFRESH
+  OTP_VERIFIED
+  OTP_VERIFY_FAILED
   JOURNAL_POSTED
   JOURNAL_VOIDED
   ACCOUNT_CREATED
@@ -291,6 +297,9 @@ model User {
   status          UserStatus @default(ACTIVE)
   permissionClaims String[]  @default([])
   refreshTokenHash String?
+  tokenVersion Int @default(0)
+  failedLoginAttempts Int @default(0)
+  lockoutUntil DateTime?
   lastLoginAt     DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt

@@ -20,6 +20,7 @@ export interface PosLookupRow {
   gstRate: number;
   saleUnit: string;
   saleUnitFactor: number;
+  baseUnit: string;
   sellableBase: number;
   stockSaleUnits: number;
   stockDisplay: string;
@@ -82,6 +83,7 @@ export async function posLookup(params: {
       gstRate: Number(p.gstRate),
       saleUnit: config.saleUnit,
       saleUnitFactor: config.saleUnitFactor,
+      baseUnit: config.baseUnit,
       sellableBase,
       stockSaleUnits,
       stockDisplay: formatStock(config, sellableBase, stockSaleUnits),
