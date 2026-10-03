@@ -2,9 +2,15 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma";
 import { AppError } from "../domain/errors";
 import { assertSeatLimit } from "./subscription.service";
+import { permissionsForRole, rolePermissions, type Permission } from "../domain/permissions";
 
 export type UserRole = "SUPER_ADMIN" | "OWNER" | "MANAGER" | "PHARMACIST" | "STAFF";
 export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
+
+function canAssignRole(actorPermissions: Permission[], targetRole: UserRole): boolean {
+  const required = rolePermissions[targetRole] ?? [];
+  return required.every(p => actorPermissions.includes(p));
+}
 
 export interface CreateUserInput {
   fullName: string;
@@ -53,9 +59,19 @@ export async function listUsers(organizationId: string) {
 export async function createUser(
   organizationId: string,
   actedById: string,
+  actorPermissions: Permission[],
   input: CreateUserInput,
 ) {
   const email = input.email.toLowerCase().trim();
+
+  // Prevent privilege escalation: actor can only assign roles they have permissions for
+  if (!canAssignRole(actorPermissions, input.role)) {
+    throw new AppError(
+      "You do not have permission to assign this role.",
+      403,
+      "FORBIDDEN",
+    );
+  }
 
   const existing = await prisma.user.findUnique({
     where: { organizationId_email: { organizationId, email } },
@@ -103,6 +119,7 @@ export async function createUser(
 export async function updateUser(
   organizationId: string,
   actedById: string,
+  actorPermissions: Permission[],
   userId: string,
   input: UpdateUserInput,
 ) {
@@ -122,6 +139,14 @@ export async function updateUser(
         "VALIDATION",
       );
     }
+  }
+
+  if (input.role !== undefined && !canAssignRole(actorPermissions, input.role)) {
+    throw new AppError(
+      "You do not have permission to assign this role.",
+      403,
+      "FORBIDDEN",
+    );
   }
 
   const data: Record<string, unknown> = {};

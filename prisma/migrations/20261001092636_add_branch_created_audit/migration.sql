@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "AuditAction" ADD VALUE 'BRANCH_CREATED';

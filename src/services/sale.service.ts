@@ -113,9 +113,18 @@ export interface ReturnItemInput {
   reason?: string;
 }
 
-async function nextInvoiceNo(organizationId: string) {
-  const count = await prisma.sale.count({ where: { organizationId } });
-  return `INV-${new Date().getFullYear()}-${String(count + 1).padStart(4, "0")}`;
+/**
+ * Atomically generates the next invoice number using an upsert counter.
+ * Guarantees uniqueness even under concurrent requests.
+ */
+async function nextInvoiceNo(tx: any, organizationId: string) {
+  const year = new Date().getFullYear();
+  const counter = await tx.invoiceCounter.upsert({
+    where: { organizationId_year: { organizationId, year } },
+    create: { organizationId, year, sequence: 1 },
+    update: { sequence: { increment: 1 } },
+  });
+  return `INV-${year}-${String(counter.sequence).padStart(4, "0")}`;
 }
 
 /**
@@ -150,9 +159,43 @@ export async function createSale(
     }
   }
 
-  const invoiceNo = await nextInvoiceNo(organizationId);
+  if (input.clientSaleId) {
+    const existing = await prisma.sale.findUnique({
+      where: { clientSaleId: input.clientSaleId },
+    });
+    if (existing) {
+      return {
+        sale: existing,
+        totals: {
+          subtotal: Number(existing.subtotal),
+          discount: Number(existing.discount),
+          tax: Number(existing.tax),
+          total: Number(existing.total),
+        },
+      };
+    }
+  }
+
+  // Validate branch belongs to organization
+  const branch = await prisma.branch.findFirst({
+    where: { id: input.branchId, organizationId, isActive: true },
+  });
+  if (!branch) {
+    throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+  }
+
+  // Validate customer belongs to organization (if provided)
+  if (input.customerId) {
+    const customer = await prisma.customer.findFirst({
+      where: { id: input.customerId, organizationId },
+    });
+    if (!customer) {
+      throw new AppError("Customer not found in this workspace.", 404, "NOT_FOUND");
+    }
+  }
 
   return prisma.$transaction(async tx => {
+    const invoiceNo = await nextInvoiceNo(tx, organizationId);
     const itemsWithFefo: {
       productId: string;
       quantity: number;
@@ -219,11 +262,21 @@ export async function createSale(
       });
     }
 
+    // Fetch all product GST rates upfront to avoid N+1 queries
+    const productIds = itemsWithFefo.map(item => item.productId);
+    const products = await tx.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, gstRate: true },
+    });
+    const gstRateMap = new Map(products.map(p => [p.id, Number(p.gstRate)]));
+
     const discountPct = Math.max(0, Math.min(100, Number(input.discount ?? 0)));
     const subtotal = accSubtotal;
     const discountAmount = (subtotal * discountPct) / 100;
-    const tax = (accTax * (100 - discountPct)) / 100;
-    const total = subtotal - discountAmount + tax;
+    // Tax is calculated on the DISCOUNTED subtotal (correct GST treatment)
+    const taxableAmount = subtotal - discountAmount;
+    const tax = (taxableAmount * accTax) / accSubtotal; // proportionally apply tax
+    const total = taxableAmount + tax;
 
     const sale = await tx.sale.create({
       data: {
@@ -243,27 +296,35 @@ export async function createSale(
     });
 
     for (const item of itemsWithFefo) {
-      const productGst = (
-        await tx.product.findUnique({ where: { id: item.productId } })
-      )?.gstRate;
+      const productGst = gstRateMap.get(item.productId) ?? 0;
       for (const alloc of item.allocations) {
-        const batch = await tx.batch.findUnique({ where: { id: alloc.batchId } });
-        if (!batch) continue;
-        const after = batch.quantity - alloc.qty;
-        await tx.batch.update({
-          where: { id: batch.id },
-          data: { quantity: after },
+        // Atomic batch update with concurrency guard: only decrement if sufficient stock remains
+        const updatedBatch = await tx.batch.updateMany({
+          where: { id: alloc.batchId, quantity: { gte: alloc.qty } },
+          data: { quantity: { decrement: alloc.qty } },
         });
+        if (updatedBatch.count === 0) {
+          throw new AppError(
+            `Insufficient stock in batch (concurrent modification).`,
+            409,
+            "INSUFFICIENT_STOCK",
+          );
+        }
+        // Fetch the updated batch for audit trail
+        const updated = await tx.batch.findUniqueOrThrow({ where: { id: alloc.batchId } });
+        const beforeQty = updated.quantity + alloc.qty;
+        const afterQty = updated.quantity;
+
         await tx.inventoryMovement.create({
           data: {
             organizationId,
             branchId: input.branchId,
             productId: item.productId,
-            batchId: batch.id,
+            batchId: alloc.batchId,
             type: "SALE",
             quantity: -alloc.qty,
-            beforeQty: batch.quantity,
-            afterQty: after,
+            beforeQty,
+            afterQty,
             unitCost: alloc.unitCost,
             referenceType: "SALE",
             referenceId: sale.id,
@@ -274,11 +335,11 @@ export async function createSale(
           data: {
             saleId: sale.id,
             productId: item.productId,
-            batchId: batch.id,
+            batchId: alloc.batchId,
             quantity: alloc.qty,
             unitPrice: alloc.unitPrice,
             unitCost: alloc.unitCost,
-            gstRate: Number(productGst ?? 0),
+            gstRate: productGst,
             total: alloc.unitPrice * alloc.qty,
           },
         });
@@ -465,15 +526,15 @@ export async function returnSale(
       });
     }
 
+    // Calculate total returned across all items (previously returned + newly returned)
     const soldSum = sale.items.reduce((acc, i) => acc + i.quantity, 0);
-    const returnedSum = sale.items.reduce(
-      (acc, i) => acc + (i.returnedQty + results.filter(r => r.saleItemId === i.id).reduce((a, r) => a + r.returned, 0)),
-      0,
-    );
+    const previouslyReturnedSum = sale.items.reduce((acc, i) => acc + i.returnedQty, 0);
+    const newlyReturnedSum = results.reduce((acc, r) => acc + r.returned, 0);
+    const returnedSum = previouslyReturnedSum + newlyReturnedSum;
     const status =
       returnedSum >= soldSum
         ? "RETURNED"
-        : sale.status === "PARTIAL_RETURN" || returnedSum > 0
+        : returnedSum > 0
           ? "PARTIAL_RETURN"
           : sale.status;
 

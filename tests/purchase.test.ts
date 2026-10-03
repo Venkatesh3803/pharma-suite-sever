@@ -77,9 +77,12 @@ describe("Vendor + Purchase management module", () => {
     expect(po.items[0].receivedQty).toBe(0);
     expect(po.items[0].freeQuantity).toBe(10);
     expect(Number(po.subtotal)).toBe(5000);
-    expect(Number(po.discount)).toBe(500);
-    expect(Number(po.tax)).toBe(540);
-    expect(Number(po.total)).toBe(5040);
+    // 5% discount on 5000 = 250 (not 500 - discount is percentage, not flat per unit)
+    expect(Number(po.discount)).toBe(250);
+    // Tax on discounted amount: (5000 - 250) * 12% = 570
+    expect(Number(po.tax)).toBe(570);
+    // Total = (5000 - 250) + 570 = 5320
+    expect(Number(po.total)).toBe(5320);
     expect(po.poNumber).toMatch(/^PO-\d{4}-0001$/);
   });
 

@@ -46,20 +46,24 @@ export interface ReturnItemInput {
   note?: string;
 }
 
-async function nextPoNumber(organizationId: string) {
-  const count = await prisma.purchase.count({
-    where: { organizationId },
-  });
+async function nextPoNumber(tx: any, organizationId: string) {
   const year = new Date().getFullYear();
-  return `PO-${year}-${String(count + 1).padStart(4, "0")}`;
+  const counter = await tx.purchaseCounter.upsert({
+    where: { organizationId_year: { organizationId, year } },
+    create: { organizationId, year, sequence: 1 },
+    update: { sequence: { increment: 1 } },
+  });
+  return `PO-${year}-${String(counter.sequence).padStart(4, "0")}`;
 }
 
-async function nextReceiptNumber(organizationId: string) {
-  const count = await prisma.purchaseReceipt.count({
-    where: { organizationId },
-  });
+async function nextReceiptNumber(tx: any, organizationId: string) {
   const year = new Date().getFullYear();
-  return `GRN-${year}-${String(count + 1).padStart(4, "0")}`;
+  const counter = await tx.receiptCounter.upsert({
+    where: { organizationId_year: { organizationId, year } },
+    create: { organizationId, year, sequence: 1 },
+    update: { sequence: { increment: 1 } },
+  });
+  return `GRN-${year}-${String(counter.sequence).padStart(4, "0")}`;
 }
 
 function validatePurchaseItems(input: CreatePurchaseInput): void {
@@ -134,10 +138,10 @@ export async function createPurchase(
   input: CreatePurchaseInput,
 ) {
   validatePurchaseItems(input);
-  const poNumber = await nextPoNumber(organizationId);
   const { rows, subtotal, discount, tax, total } = buildPurchaseItemRows(input.items);
 
   return prisma.$transaction(async tx => {
+    const poNumber = await nextPoNumber(tx, organizationId);
     const purchase = await tx.purchase.create({
       data: {
         poNumber,
@@ -330,7 +334,22 @@ export async function receivePurchase(
     if (purchase.status === "RECEIVED" || purchase.status === "COMPLETED") {
       throw new AppError("Purchase already received.", 400, "ALREADY_RECEIVED");
     }
-    const effectiveBranchId = branchId ?? purchase.branchId;
+
+    // Validate branch: if explicitly provided, it must belong to the organization
+    // and match the purchase's branch. If not provided, use purchase's branch.
+    let effectiveBranchId = purchase.branchId;
+    if (branchId) {
+      const targetBranch = await tx.branch.findFirst({
+        where: { id: branchId, organizationId, isActive: true },
+      });
+      if (!targetBranch) {
+        throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+      }
+      if (branchId !== purchase.branchId) {
+        throw new AppError("Receipt branch must match the purchase order's branch.", 400, "VALIDATION");
+      }
+      effectiveBranchId = branchId;
+    }
 
     const pendingItems = purchase.items.filter(
       i => i.receivedQty < i.quantity,
@@ -417,7 +436,7 @@ export async function receivePurchase(
       }
     }
 
-    const receiptNumber = await nextReceiptNumber(organizationId);
+    const receiptNumber = await nextReceiptNumber(tx, organizationId);
     const receipt = await tx.purchaseReceipt.create({
       data: {
         organizationId,
@@ -448,12 +467,13 @@ export async function receivePurchase(
         supplierId: purchase.supplierId,
       });
 
-      const beforeQty = Number(batch.batch.quantity);
-      const afterQty = beforeQty + totalQty;
-      await tx.batch.update({
+      // Atomic batch quantity increment with concurrency guard
+      const updatedBatch = await tx.batch.update({
         where: { id: batch.batch.id },
-        data: { quantity: afterQty },
+        data: { quantity: { increment: totalQty } },
       });
+      const beforeQty = updatedBatch.quantity - totalQty;
+      const afterQty = updatedBatch.quantity;
       await tx.inventoryMovement.create({
         data: {
           organizationId,
@@ -758,6 +778,7 @@ async function upsertBatch(
     supplierId: string;
   },
 ) {
+  // Try to find existing batch first
   const existing = await tx.batch.findFirst({
     where: {
       organizationId: data.organizationId,
@@ -769,6 +790,22 @@ async function upsertBatch(
   if (existing) {
     return { batch: existing, created: false };
   }
-  const batch = await tx.batch.create({ data });
-  return { batch, created: true };
+  try {
+    const batch = await tx.batch.create({ data });
+    return { batch, created: true };
+  } catch (e: any) {
+    // Handle race condition: another request created the same batch
+    if (e.code === "P2002") {
+      const existing = await tx.batch.findFirstOrThrow({
+        where: {
+          organizationId: data.organizationId,
+          branchId: data.branchId,
+          productId: data.productId,
+          batchNumber: data.batchNumber,
+        },
+      });
+      return { batch: existing, created: false };
+    }
+    throw e;
+  }
 }

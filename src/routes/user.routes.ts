@@ -8,11 +8,19 @@ import * as ctrl from "../controllers/user.controller";
 const router = Router();
 router.use(authenticate);
 
+const passwordPolicy = z
+  .string()
+  .min(8, "Password must be at least 8 characters and include both letters and numbers.")
+  .regex(/^(?=.*[A-Za-z])(?=.*\d)/, "Password must be at least 8 characters and include both letters and numbers.");
+
 const createUserSchema = z.object({
   fullName: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(6),
-  phone: z.string().optional(),
+  password: passwordPolicy,
+  phone: z
+    .string()
+    .optional()
+    .refine(v => !v || /^(\+91[\-\s]?)?[6-9]\d{9}$/.test(v.trim()), "Enter a valid Indian mobile number (10 digits, optionally with +91)."),
   role: z
     .enum(["SUPER_ADMIN", "OWNER", "MANAGER", "PHARMACIST", "STAFF"])
     .default("STAFF"),
@@ -21,13 +29,16 @@ const createUserSchema = z.object({
 
 const updateUserSchema = z.object({
   fullName: z.string().min(1).optional(),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .optional()
+    .refine(v => !v || /^(\+91[\-\s]?)?[6-9]\d{9}$/.test(v.trim()), "Enter a valid Indian mobile number (10 digits, optionally with +91)."),
   role: z
     .enum(["SUPER_ADMIN", "OWNER", "MANAGER", "PHARMACIST", "STAFF"])
     .optional(),
   status: z.enum(["ACTIVE", "INACTIVE", "SUSPENDED"]).optional(),
   branchId: z.string().nullable().optional(),
-  password: z.string().min(6).optional(),
+  password: passwordPolicy.optional(),
 });
 
 router.get("/", requirePermission(Permissions.USERS_MANAGE), ctrl.list);

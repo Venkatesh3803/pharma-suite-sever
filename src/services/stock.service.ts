@@ -46,6 +46,7 @@ export interface StockMutation {
 /**
  * Applies a positive (inbound) stock change atomically. Returns the
  * before/after quantities for the movement record.
+ * Uses atomic increment to avoid race conditions.
  */
 export async function addStock(
   tx: TxClient,
@@ -54,19 +55,21 @@ export async function addStock(
   if (!Number.isInteger(params.delta) || params.delta <= 0) {
     throw new AppError("Inbound quantity must be a positive integer.", 400, "VALIDATION");
   }
-  const batch = await tx.batch.findUnique({
+
+  // Atomic increment using conditional update to avoid race conditions
+  const result = await tx.batch.update({
     where: { id: params.batchId },
+    data: { quantity: { increment: params.delta } },
     select: { quantity: true },
   });
-  if (!batch) throw new AppError("Batch not found.", 404, "NOT_FOUND");
 
-  const afterQty = batch.quantity + params.delta;
-  await tx.batch.update({
-    where: { id: params.batchId },
-    data: { quantity: afterQty },
-  });
-  await createMovement(tx, { ...params, beforeQty: batch.quantity, afterQty });
-  return { beforeQty: batch.quantity, afterQty };
+  if (!result) throw new AppError("Batch not found.", 404, "NOT_FOUND");
+
+  const afterQty = result.quantity;
+  const beforeQty = afterQty - params.delta;
+
+  await createMovement(tx, { ...params, beforeQty, afterQty });
+  return { beforeQty, afterQty };
 }
 
 /**

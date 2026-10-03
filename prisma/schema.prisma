@@ -165,6 +165,7 @@ enum AuditAction {
   USER_UPDATED
   ORGANIZATION_UPDATED
   SETTINGS_CHANGED
+  BRANCH_CREATED
   PASSWORD_RESET
   PASSWORD_RESET_REQUESTED
   PASSWORD_RESET_COMPLETED
@@ -277,11 +278,12 @@ model Branch {
   sales         Sale[]
   prescriptions Prescription[]
   movements     InventoryMovement[]
+
+  @@unique([organizationId, code], name: "Branch_organizationId_code_key")
   alerts        Alert[]
   qualityChecks QualityControlCheck[]
   auditLogs     AuditLog[]
 
-  @@unique([organizationId, code])
   @@index([organizationId])
 }
 
@@ -602,6 +604,28 @@ model PurchaseItem {
   @@index([productId])
 }
 
+model PurchaseCounter {
+  id            String   @id @default(uuid())
+  organizationId String   @unique
+  year          Int
+  sequence      Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  @@unique([organizationId, year])
+  @@index([organizationId])
+}
+
+model ReceiptCounter {
+  id            String   @id @default(uuid())
+  organizationId String   @unique
+  year          Int
+  sequence      Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  @@unique([organizationId, year])
+  @@index([organizationId])
+}
+
 model PurchaseReceipt {
   id            String   @id @default(uuid())
   organizationId String
@@ -743,6 +767,17 @@ model SaleItem {
   @@index([saleId])
   @@index([productId])
   @@index([batchId])
+}
+
+model InvoiceCounter {
+  id            String   @id @default(uuid())
+  organizationId String   @unique
+  year          Int
+  sequence      Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  @@unique([organizationId, year])
+  @@index([organizationId])
 }
 
 model Alert {

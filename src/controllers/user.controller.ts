@@ -20,6 +20,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     const data = await createUser(
       req.user!.organizationId,
       req.user!.userId,
+      req.authPermissions ?? [],
       req.body,
     );
     return ok(res, data, "User created.", 201);
@@ -33,6 +34,7 @@ export async function update(req: Request, res: Response, next: NextFunction) {
     const data = await updateUser(
       req.user!.organizationId,
       req.user!.userId,
+      req.authPermissions ?? [],
       req.params.id,
       req.body,
     );

@@ -46,10 +46,19 @@ export async function adjustStock(input: AdjustmentInput) {
     });
     if (!prod) throw new AppError("Product not found.", 404, "NOT_FOUND");
 
+    // Validate branch belongs to organization
+    const targetBranch = await tx.branch.findFirst({
+      where: { id: branchId, organizationId, isActive: true },
+    });
+    if (!targetBranch) {
+      throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+    }
+
     if (quantity > 0) {
+      // Positive adjustment: add to the EARLIEST expiry batch (FEFO consistency)
       const candidate = await tx.batch.findFirst({
-        where: { productId, branchId, quantity: { gt: 0 } },
-        orderBy: { expiryDate: "desc" },
+        where: { productId, branchId, quantity: { gt: 0 }, expiryDate: { gte: new Date() } },
+        orderBy: { expiryDate: "asc" }, // Earliest expiry first (FEFO)
       });
       if (candidate) {
         await addStock(tx, {
@@ -170,6 +179,14 @@ export async function adjustBatchStock(input: BatchAdjustmentInput) {
     });
     if (!batch) throw new AppError("Batch not found in this workspace.", 404, "NOT_FOUND");
 
+    // Validate branch belongs to organization
+    const targetBranch = await tx.branch.findFirst({
+      where: { id: branchId, organizationId, isActive: true },
+    });
+    if (!targetBranch) {
+      throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+    }
+
     if (quantity > 0) {
       await addStock(tx, {
         organizationId,
@@ -184,6 +201,12 @@ export async function adjustBatchStock(input: BatchAdjustmentInput) {
         unitCost: Number(batch.purchasePrice),
       });
     } else {
+      // Prevent adjustments on expired batches
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (batch.expiryDate < today) {
+        throw new AppError("Cannot adjust stock for expired batch.", 400, "VALIDATION");
+      }
       await removeStock(tx, {
         organizationId,
         branchId,
@@ -231,6 +254,14 @@ export interface StockCountInput {
  */
 export async function applyStockCount(input: StockCountInput) {
   const { organizationId, branchId, userId, counts } = input;
+
+  // Validate branch belongs to organization
+  const targetBranch = await prisma.branch.findFirst({
+    where: { id: branchId, organizationId, isActive: true },
+  });
+  if (!targetBranch) {
+    throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+  }
 
   return prisma.$transaction(async tx => {
     const results: {
@@ -367,51 +398,67 @@ export async function addOpeningBatch(input: OpeningBatchInput) {
     throw new AppError("Quantity must be positive.", 400, "VALIDATION");
   }
 
-  return prisma.$transaction(async tx => {
-    const product = await tx.product.findFirst({
-      where: { id: productId, organizationId, deletedAt: null },
-    });
-    if (!product) throw new AppError("Product not found.", 404, "NOT_FOUND");
+  // Validate expiry date is not in the past
+  if (expiryDate) {
+    const exp = new Date(expiryDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (exp < today) {
+      throw new AppError("Expiry date cannot be in the past.", 400, "VALIDATION");
+    }
+  }
 
-    const batchId = batchNumber ?? `OB-${Date.now().toString(36).toUpperCase()}`;
-    const existing = await tx.batch.findFirst({
+  // Validate branch belongs to organization
+  const targetBranch = await prisma.branch.findFirst({
+    where: { id: branchId, organizationId, isActive: true },
+  });
+  if (!targetBranch) {
+    throw new AppError("Branch not found in this workspace.", 404, "NOT_FOUND");
+  }
+
+  const product = await prisma.product.findFirst({
+    where: { id: productId, organizationId, deletedAt: null },
+  });
+  if (!product) throw new AppError("Product not found.", 404, "NOT_FOUND");
+
+  const batchId = batchNumber ?? `OB-${Date.now().toString(36).toUpperCase()}`;
+
+  return prisma.$transaction(async tx => {
+    // Use upsert for atomic upsert with race condition handling
+    const batch = await tx.batch.upsert({
       where: {
+        organizationId_branchId_productId_batchNumber: {
+          organizationId,
+          branchId,
+          productId,
+          batchNumber: batchId,
+        },
+      },
+      create: {
         organizationId,
         branchId,
         productId,
         batchNumber: batchId,
+        quantity,
+        expiryDate: expiryDate ? new Date(expiryDate) : new Date(),
+        purchasePrice: new Prisma.Decimal(purchasePrice ?? 0),
+        mrp: new Prisma.Decimal(mrp ?? 0),
+        sellingPrice: new Prisma.Decimal(sellingPrice ?? (mrp ?? 0) * 0.8),
+        supplierId: supplierId ?? null,
+      },
+      update: {
+        quantity: { increment: quantity },
+        ...(purchasePrice !== undefined ? { purchasePrice: new Prisma.Decimal(purchasePrice) } : {}),
+        ...(mrp !== undefined ? { mrp: new Prisma.Decimal(mrp) } : {}),
+        ...(sellingPrice !== undefined ? { sellingPrice: new Prisma.Decimal(sellingPrice) } : {}),
+        ...(expiryDate ? { expiryDate: new Date(expiryDate) } : {}),
+        ...(supplierId ? { supplierId } : {}),
       },
     });
 
-    const batch = existing
-      ? await tx.batch.update({
-          where: { id: existing.id },
-          data: {
-            quantity: existing.quantity + quantity,
-            ...(purchasePrice !== undefined ? { purchasePrice: new Prisma.Decimal(purchasePrice) } : {}),
-            ...(mrp !== undefined ? { mrp: new Prisma.Decimal(mrp) } : {}),
-            ...(sellingPrice !== undefined ? { sellingPrice: new Prisma.Decimal(sellingPrice) } : {}),
-            ...(expiryDate ? { expiryDate: new Date(expiryDate) } : {}),
-            ...(supplierId ? { supplierId } : {}),
-          },
-        })
-      : await tx.batch.create({
-          data: {
-            organizationId,
-            branchId,
-            productId,
-            batchNumber: batchId,
-            quantity,
-            expiryDate: expiryDate ? new Date(expiryDate) : new Date(),
-            purchasePrice: new Prisma.Decimal(purchasePrice ?? 0),
-            mrp: new Prisma.Decimal(mrp ?? 0),
-            sellingPrice: new Prisma.Decimal(sellingPrice ?? (mrp ?? 0) * 0.8),
-            supplierId: supplierId ?? null,
-          },
-        });
-
-    const beforeQty = existing?.quantity ?? 0;
+    const beforeQty = batch.quantity - quantity;
     const afterQty = batch.quantity;
+    const created = beforeQty === 0; // If beforeQty is 0, it was newly created
 
     await tx.inventoryMovement.create({
       data: {
@@ -442,7 +489,7 @@ export async function addOpeningBatch(input: OpeningBatchInput) {
       },
     });
 
-    return { batch, created: !existing, beforeQty, afterQty };
+    return { batch, created, beforeQty, afterQty };
   });
 }
 
