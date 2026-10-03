@@ -2,6 +2,10 @@
   "name": "pharmasuite-backend",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "yarn@4.9.1",
+  "engines": {
+    "node": "20.x"
+  },
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
