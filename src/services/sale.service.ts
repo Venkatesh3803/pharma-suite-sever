@@ -1,8 +1,8 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
-import { addStock, removeStock } from "./stock.service";
-import { parseUnitConfig } from "./units.service";
-import { postSaleEntry } from "./finance.service";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
+import { addStock, removeStock } from "./stock.service.js";
+import { parseUnitConfig } from "./units.service.js";
+import { postSaleEntry } from "./finance.service.js";
 
 export interface SaleItemInput {
   productId: string;

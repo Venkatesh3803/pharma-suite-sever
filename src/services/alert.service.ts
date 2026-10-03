@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 import type { AlertType, AlertSeverity } from "@prisma/client";
 
 export async function listAlerts(params: {

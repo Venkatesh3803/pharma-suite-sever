@@ -2,8 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import {
   getOrganization,
   updateOrganization,
-} from "../services/organization.service";
-import { ok } from "../utils/api";
+} from "../services/organization.service.js";
+import { ok } from "../utils/api.js";
 
 export async function get(req: Request, res: Response, next: NextFunction) {
   try {

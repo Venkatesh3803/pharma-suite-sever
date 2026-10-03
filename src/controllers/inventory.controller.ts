@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "../domain/errors";
-import { inventoryValue, lowStockItems, expiredStockUnits } from "../services/intelligence/inventory-analytics.service";
-import { buildExpiryOverview, listExpiringItems } from "../services/intelligence/expiry.service";
-import { computeStockoutRisks } from "../services/intelligence/stockout.service";
-import { detectDeadStock, deadStockSummary } from "../services/intelligence/deadstock.service";
-import { buildReorderRecommendations } from "../services/intelligence/reorder.service";
+import { AppError } from "../domain/errors.js";
+import { inventoryValue, lowStockItems, expiredStockUnits } from "../services/intelligence/inventory-analytics.service.js";
+import { buildExpiryOverview, listExpiringItems } from "../services/intelligence/expiry.service.js";
+import { computeStockoutRisks } from "../services/intelligence/stockout.service.js";
+import { detectDeadStock, deadStockSummary } from "../services/intelligence/deadstock.service.js";
+import { buildReorderRecommendations } from "../services/intelligence/reorder.service.js";
 import {
   adjustStock,
   adjustBatchStock,
@@ -15,9 +15,9 @@ import {
   getMedicineInventory,
   getMedicineBatches,
   getMedicineMovements,
-} from "../services/inventory.service";
-import { prisma } from "../lib/prisma";
-import { ok } from "../utils/api";
+} from "../services/inventory.service.js";
+import { prisma } from "../lib/prisma.js";
+import { ok } from "../utils/api.js";
 
 export async function overview(req: Request, res: Response, next: NextFunction) {
     try {

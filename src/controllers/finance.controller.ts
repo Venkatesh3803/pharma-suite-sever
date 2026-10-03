@@ -12,8 +12,8 @@ import {
   trialBalance,
   updateAccount,
   voidJournal,
-} from "../services/finance.service";
-import { ok } from "../utils/api";
+} from "../services/finance.service.js";
+import { ok } from "../utils/api.js";
 
 export async function overview(req: Request, res: Response, next: NextFunction) {
   try {

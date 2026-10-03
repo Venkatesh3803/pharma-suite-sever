@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { listCustomers, getCustomer, createCustomer, updateCustomer, deleteCustomer, createSale } from "../services/customer.service";
-import { ok } from "../utils/api";
+import { listCustomers, getCustomer, createCustomer, updateCustomer, deleteCustomer, createSale } from "../services/customer.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
     try {

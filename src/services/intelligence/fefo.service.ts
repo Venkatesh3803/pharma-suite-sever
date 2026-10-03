@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/prisma";
-import { removeStock, type TxClient } from "../stock.service";
-import { AppError } from "../../domain/errors";
+import { prisma } from "../../lib/prisma.js";
+import { removeStock, type TxClient } from "../stock.service.js";
+import { AppError } from "../../domain/errors.js";
 
 export interface FefoResult {
   batchId: string;

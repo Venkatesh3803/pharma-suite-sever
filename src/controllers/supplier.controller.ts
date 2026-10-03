@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import { listSuppliers, getSupplier, createSupplier, updateSupplier } from "../services/supplier.service";
-import { vendorPerformance, vendorPriceHistory } from "../services/purchase-analytics.service";
-import { ok } from "../utils/api";
+import { listSuppliers, getSupplier, createSupplier, updateSupplier } from "../services/supplier.service.js";
+import { vendorPerformance, vendorPriceHistory } from "../services/purchase-analytics.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
     try {

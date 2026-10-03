@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { authenticate, requirePermission } from "../middleware/auth";
-import { Permissions } from "../domain/permissions";
-import { validateBody } from "../middleware/validate";
+import { authenticate, requirePermission } from "../middleware/auth.js";
+import { Permissions } from "../domain/permissions.js";
+import { validateBody } from "../middleware/validate.js";
 import { z } from "zod";
-import * as ctrl from "../controllers/user.controller";
+import * as ctrl from "../controllers/user.controller.js";
 
 const router = Router();
 router.use(authenticate);

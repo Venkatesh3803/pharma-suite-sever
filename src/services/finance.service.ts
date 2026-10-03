@@ -1,7 +1,7 @@
 import type { AccountType } from "@prisma/client";
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
-import type { DbClient, TxClient } from "./stock.service";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
+import type { DbClient, TxClient } from "./stock.service.js";
 
 /**
  * Double-entry accounting engine.

@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "../domain/errors";
+import { AppError } from "../domain/errors.js";
 import {
     loginUser,
     logoutUser,
@@ -18,8 +18,8 @@ import {
     requestPasswordReset,
     verifyPasswordResetOtp,
     resetPassword as resetPasswordForUser
-} from "../services/auth.service";
-import { ok } from "../utils/api";
+} from "../services/auth.service.js";
+import { ok } from "../utils/api.js";
 
 export async function login(req: Request, res: Response, next: NextFunction) {
     try {

@@ -1,10 +1,10 @@
-import { prisma } from "../lib/prisma";
-import { buildExpiryOverview } from "../services/intelligence/expiry.service";
-import { computeStockoutRisks } from "../services/intelligence/stockout.service";
-import { detectDeadStock } from "../services/intelligence/deadstock.service";
-import { buildReorderRecommendations } from "../services/intelligence/reorder.service";
-import { createAlertsBulk } from "../services/alert.service";
-import { inventoryValue } from "../services/intelligence/inventory-analytics.service";
+import { prisma } from "../lib/prisma.js";
+import { buildExpiryOverview } from "../services/intelligence/expiry.service.js";
+import { computeStockoutRisks } from "../services/intelligence/stockout.service.js";
+import { detectDeadStock } from "../services/intelligence/deadstock.service.js";
+import { buildReorderRecommendations } from "../services/intelligence/reorder.service.js";
+import { createAlertsBulk } from "../services/alert.service.js";
+import { inventoryValue } from "../services/intelligence/inventory-analytics.service.js";
 
 /**
  * Runs all daily intelligence jobs for every active organization and

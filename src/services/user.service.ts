@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
-import { assertSeatLimit } from "./subscription.service";
-import { permissionsForRole, rolePermissions, type Permission } from "../domain/permissions";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
+import { assertSeatLimit } from "./subscription.service.js";
+import { permissionsForRole, rolePermissions, type Permission } from "../domain/permissions.js";
 
 export type UserRole = "SUPER_ADMIN" | "OWNER" | "MANAGER" | "PHARMACIST" | "STAFF";
 export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";

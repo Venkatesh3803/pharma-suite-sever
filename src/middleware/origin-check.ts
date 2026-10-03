@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { config } from "../config";
-import { AppError } from "../domain/errors";
+import { config } from "../config/index.js";
+import { AppError } from "../domain/errors.js";
 
 function allowedOrigins(): string[] {
     return config.corsOrigin

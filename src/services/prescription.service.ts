@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { config } from "../config";
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { config } from "../config/index.js";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 
 export interface PrescriptionFile {
   originalname: string;

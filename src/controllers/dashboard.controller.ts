@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { buildDashboard } from "../services/dashboard.service";
-import { ok } from "../utils/api";
+import { buildDashboard } from "../services/dashboard.service.js";
+import { ok } from "../utils/api.js";
 
 export async function dashboard(req: Request, res: Response, next: NextFunction) {
     try {

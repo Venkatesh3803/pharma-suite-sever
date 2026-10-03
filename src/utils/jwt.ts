@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { randomBytes } from "node:crypto";
-import { config } from "../config";
+import { config } from "../config/index.js";
 
 export interface TokenPayload {
   userId: string;

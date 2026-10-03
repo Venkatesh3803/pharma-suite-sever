@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import type { SubscriptionTier } from "@prisma/client";
-import { AppError } from "../domain/errors";
-import { TIER_CONFIG } from "../domain/plans";
-import { ensureSubscription, isAccessActive } from "../services/subscription.service";
+import { AppError } from "../domain/errors.js";
+import { TIER_CONFIG } from "../domain/plans.js";
+import { ensureSubscription, isAccessActive } from "../services/subscription.service.js";
 
 declare global {
   namespace Express {

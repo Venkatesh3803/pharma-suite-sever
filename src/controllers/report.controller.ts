@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { salesReport, reportTopProducts, inventoryReport, purchaseReport, grossMarginReport } from "../services/report.service";
-import { ok } from "../utils/api";
+import { salesReport, reportTopProducts, inventoryReport, purchaseReport, grossMarginReport } from "../services/report.service.js";
+import { ok } from "../utils/api.js";
 
 function toDate(v?: string): Date | undefined {
     return v ? new Date(v) : undefined;

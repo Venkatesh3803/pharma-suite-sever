@@ -7,8 +7,8 @@ import {
     deleteProduct,
     listCategories as listCategoriesSvc,
     createCategory as createCategorySvc,
-} from "../services/product.service";
-import { ok } from "../utils/api";
+} from "../services/product.service.js";
+import { ok } from "../utils/api.js";
 
 export async function listCategories(req: Request, res: Response, next: NextFunction) {
     try {

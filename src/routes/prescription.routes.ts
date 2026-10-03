@@ -1,12 +1,12 @@
 import { Router } from "express";
 import type { RequestHandler } from "express";
-import { authenticate, requirePermission } from "../middleware/auth";
-import { checkFeatureAccess } from "../middleware/feature-access";
-import { Permissions } from "../domain/permissions";
-import { validateQuery } from "../middleware/validate";
+import { authenticate, requirePermission } from "../middleware/auth.js";
+import { checkFeatureAccess } from "../middleware/feature-access.js";
+import { Permissions } from "../domain/permissions.js";
+import { validateQuery } from "../middleware/validate.js";
 import multer from "multer";
 import { z } from "zod";
-import * as ctrl from "../controllers/prescription.controller";
+import * as ctrl from "../controllers/prescription.controller.js";
 
 const router = Router();
 router.use(authenticate);

@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import { prisma } from "../lib/prisma";
-import { ok, fail } from "../utils/api";
-import { assertBranchLimit } from "../services/subscription.service";
+import { prisma } from "../lib/prisma.js";
+import { ok, fail } from "../utils/api.js";
+import { assertBranchLimit } from "../services/subscription.service.js";
 import { Prisma } from "@prisma/client";
 
 export async function list(req: Request, res: Response, next: NextFunction) {

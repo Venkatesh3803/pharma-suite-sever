@@ -4,8 +4,8 @@ import {
   listPendingPayments,
   listSubscriptions,
   verifyPayment,
-} from "../services/subscription.service";
-import { ok } from "../utils/api";
+} from "../services/subscription.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {

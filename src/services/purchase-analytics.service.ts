@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 
 const RECEIVED_STATUSES = ["RECEIVED", "PARTIALLY_RECEIVED", "COMPLETED"] as const;
 const OPEN_STATUSES = ["DRAFT", "SUBMITTED", "APPROVED"] as const;

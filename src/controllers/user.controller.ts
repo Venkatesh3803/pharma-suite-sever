@@ -3,8 +3,8 @@ import {
   listUsers,
   createUser,
   updateUser,
-} from "../services/user.service";
-import { ok } from "../utils/api";
+} from "../services/user.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {

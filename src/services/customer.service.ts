@@ -1,9 +1,9 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
-import { createSale } from "./sale.service";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
+import { createSale } from "./sale.service.js";
 
 export { createSale };
-export type { SaleItemInput, CreateSaleInput } from "./sale.service";
+export type { SaleItemInput, CreateSaleInput } from "./sale.service.js";
 
 export interface CustomerInput {
   name: string;

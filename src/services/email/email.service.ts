@@ -1,7 +1,7 @@
-import { config } from "../../config";
-import { brevoSendEmail } from "./brevo.service";
-import { otpEmailTemplate } from "./templates/otp-email";
-import { subscriptionNoticeTemplate } from "./templates/subscription-notice";
+import { config } from "../../config/index.js";
+import { brevoSendEmail } from "./brevo.service.js";
+import { otpEmailTemplate } from "./templates/otp-email.js";
+import { subscriptionNoticeTemplate } from "./templates/subscription-notice.js";
 
 export interface SendOtpEmailInput {
     to: { email: string; name?: string };

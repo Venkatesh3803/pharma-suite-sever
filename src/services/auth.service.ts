@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes, randomInt } from "node:crypto";
-import { AppError } from "../domain/errors";
-import { prisma } from "../lib/prisma";
-import { sendOtpEmail } from "../services/email/email.service";
-import { signAccessToken, signRefreshToken, verifyRefreshToken, type TokenPayload } from "../utils/jwt";
-import { permissionsForRole } from "../domain/permissions";
+import { AppError } from "../domain/errors.js";
+import { prisma } from "../lib/prisma.js";
+import { sendOtpEmail } from "../services/email/email.service.js";
+import { signAccessToken, signRefreshToken, verifyRefreshToken, type TokenPayload } from "../utils/jwt.js";
+import { permissionsForRole } from "../domain/permissions.js";
 
 const REFRESH_COOKIE = "pharmasuite_refresh";
 const REFRESH_MAX_AGE = 7 * 24 * 60 * 60 * 1000;

@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import fs from "node:fs";
-import { AppError } from "../domain/errors";
-import { uploadPrescription, listPrescriptions, getPrescription, updatePrescriptionStatus } from "../services/prescription.service";
-import { ok } from "../utils/api";
+import { AppError } from "../domain/errors.js";
+import { uploadPrescription, listPrescriptions, getPrescription, updatePrescriptionStatus } from "../services/prescription.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
     try {

@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/prisma";
-import { computeDailySales } from "./stockout.service";
-import type { RiskLevel } from "./stockout.service";
+import { prisma } from "../../lib/prisma.js";
+import { computeDailySales } from "./stockout.service.js";
+import type { RiskLevel } from "./stockout.service.js";
 
 export interface ReorderRecommendation {
   product: {

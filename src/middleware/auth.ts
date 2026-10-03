@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "../domain/errors";
-import { permissionsForRole, type Permission } from "../domain/permissions";
-import { prisma } from "../lib/prisma";
-import { signAccessToken, verifyAccessToken } from "../utils/jwt";
-import type { TokenPayload } from "../utils/jwt";
+import { AppError } from "../domain/errors.js";
+import { permissionsForRole, type Permission } from "../domain/permissions.js";
+import { prisma } from "../lib/prisma.js";
+import { signAccessToken, verifyAccessToken } from "../utils/jwt.js";
+import type { TokenPayload } from "../utils/jwt.js";
 
 declare global {
   namespace Express {

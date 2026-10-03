@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticate, requirePermission } from "../middleware/auth";
-import { Permissions } from "../domain/permissions";
-import { dashboard } from "../controllers/dashboard.controller";
+import { authenticate, requirePermission } from "../middleware/auth.js";
+import { Permissions } from "../domain/permissions.js";
+import { dashboard } from "../controllers/dashboard.controller.js";
 
 const router = Router();
 

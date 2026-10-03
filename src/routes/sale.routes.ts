@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { authenticate, requirePermission } from "../middleware/auth";
-import { checkFeatureAccess } from "../middleware/feature-access";
-import { Permissions } from "../domain/permissions";
-import { validateBody, validateQuery } from "../middleware/validate";
+import { authenticate, requirePermission } from "../middleware/auth.js";
+import { checkFeatureAccess } from "../middleware/feature-access.js";
+import { Permissions } from "../domain/permissions.js";
+import { validateBody, validateQuery } from "../middleware/validate.js";
 import { z } from "zod";
-import * as ctrl from "../controllers/sale.controller";
+import * as ctrl from "../controllers/sale.controller.js";
 
 const router = Router();
 router.use(authenticate);

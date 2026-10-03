@@ -7,11 +7,11 @@ import {
     forgotPasswordValidator,
     verifyOtpValidator,
     resetPasswordValidator
-} from "../validators/auth.validator";
-import { validateBody } from "../middleware/validate";
-import { authenticate } from "../middleware/auth";
-import { verifyCookieRequestOrigin } from "../middleware/origin-check";
-import * as ctrl from "../controllers/auth.controller";
+} from "../validators/auth.validator.js";
+import { validateBody } from "../middleware/validate.js";
+import { authenticate } from "../middleware/auth.js";
+import { verifyCookieRequestOrigin } from "../middleware/origin-check.js";
+import * as ctrl from "../controllers/auth.controller.js";
 
 const forgotPasswordLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,

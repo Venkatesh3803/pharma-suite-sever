@@ -3,7 +3,7 @@ import {
   type ExpiryStatus,
   type MovementStatus,
   type StockStatus,
-} from "../../config/inventory";
+} from "../../config/inventory.js";
 
 /**
  * Backend-derived statuses. Thresholds live in src/config/inventory.ts and are

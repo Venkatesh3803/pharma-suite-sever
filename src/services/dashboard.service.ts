@@ -1,11 +1,11 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 import { Prisma } from "@prisma/client";
-import { inventoryValue, lowStockItems, expiredStockUnits } from "./intelligence/inventory-analytics.service";
-import { buildExpiryOverview } from "./intelligence/expiry.service";
-import { computeStockoutRisks } from "./intelligence/stockout.service";
-import { deadStockSummary } from "./intelligence/deadstock.service";
-import { buildReorderRecommendations } from "./intelligence/reorder.service";
-import { unreadAlertCount } from "./alert.service";
+import { inventoryValue, lowStockItems, expiredStockUnits } from "./intelligence/inventory-analytics.service.js";
+import { buildExpiryOverview } from "./intelligence/expiry.service.js";
+import { computeStockoutRisks } from "./intelligence/stockout.service.js";
+import { deadStockSummary } from "./intelligence/deadstock.service.js";
+import { buildReorderRecommendations } from "./intelligence/reorder.service.js";
+import { unreadAlertCount } from "./alert.service.js";
 
 async function cogsForPeriod(
   organizationId: string,

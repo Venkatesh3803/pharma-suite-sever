@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { AppError } from "../domain/errors";
+import { AppError } from "../domain/errors.js";
 
 /**
  * Atomic, concurrency-safe stock mutations.

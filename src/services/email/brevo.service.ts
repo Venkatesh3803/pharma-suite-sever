@@ -1,5 +1,5 @@
 import { BrevoClient } from "@getbrevo/brevo";
-import { config } from "../../config";
+import { config } from "../../config/index.js";
 
 let client: BrevoClient | null = null;
 

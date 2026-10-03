@@ -8,14 +8,14 @@ import {
   receivePurchase,
   createReturn,
   listReturns,
-} from "../services/purchase.service";
+} from "../services/purchase.service.js";
 import {
   purchaseSummary,
   vendorPerformance,
   vendorPriceHistory,
-} from "../services/purchase-analytics.service";
-import { ok } from "../utils/api";
-import { generatePurchasePdf } from "../services/purchase-pdf.service";
+} from "../services/purchase-analytics.service.js";
+import { ok } from "../utils/api.js";
+import { generatePurchasePdf } from "../services/purchase-pdf.service.js";
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {

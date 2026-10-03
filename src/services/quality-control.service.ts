@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 import type { QualityCheckType, QualityControlStatus } from "@prisma/client";
 
 const PENDING_WINDOW_DAYS = 30;

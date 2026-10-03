@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 import { Prisma } from "@prisma/client";
 import {
   inventoryConfig,
@@ -7,18 +7,18 @@ import {
   type ExpiryStatus,
   type MovementStatus,
   type StockStatus,
-} from "../config/inventory";
-import { daysBetween, expiryStatus, stockStatus } from "./intelligence/inventory-status.service";
-import { removeStock, addStock } from "./stock.service";
-import { parseUnitConfig, formatBaseUnits } from "./units.service";
+} from "../config/inventory.js";
+import { daysBetween, expiryStatus, stockStatus } from "./intelligence/inventory-status.service.js";
+import { removeStock, addStock } from "./stock.service.js";
+import { parseUnitConfig, formatBaseUnits } from "./units.service.js";
 import {
   classifyProductMovement,
   getSalesVelocity,
   getPurchasePriceHistory,
   priceVariance,
   type SalesVelocity,
-} from "./intelligence/movement-analytics.service";
-import { sellableStock } from "./intelligence/fefo.service";
+} from "./intelligence/movement-analytics.service.js";
+import { sellableStock } from "./intelligence/fefo.service.js";
 
 export interface AdjustmentInput {
   organizationId: string;

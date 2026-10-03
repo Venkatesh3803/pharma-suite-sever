@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticate, requirePermission } from "../middleware/auth";
-import { Permissions } from "../domain/permissions";
-import * as ctrl from "../controllers/branch.controller";
+import { authenticate, requirePermission } from "../middleware/auth.js";
+import { Permissions } from "../domain/permissions.js";
+import * as ctrl from "../controllers/branch.controller.js";
 
 const router = Router();
 router.use(authenticate);

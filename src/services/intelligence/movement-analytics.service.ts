@@ -1,7 +1,7 @@
-import { prisma } from "../../lib/prisma";
-import { inventoryConfig } from "../../config/inventory";
-import type { MovementStatus } from "../../config/inventory";
-import { daysBetween, movementStatusForProduct } from "./inventory-status.service";
+import { prisma } from "../../lib/prisma.js";
+import { inventoryConfig } from "../../config/inventory.js";
+import type { MovementStatus } from "../../config/inventory.js";
+import { daysBetween, movementStatusForProduct } from "./inventory-status.service.js";
 
 export interface SalesVelocity {
   averageDailySales: number;

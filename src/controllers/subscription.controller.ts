@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { getMySubscription, selectPlan as selectPlanService } from "../services/subscription.service";
-import { ok } from "../utils/api";
+import { getMySubscription, selectPlan as selectPlanService } from "../services/subscription.service.js";
+import { ok } from "../utils/api.js";
 
 export async function me(req: Request, res: Response, next: NextFunction) {
   try {

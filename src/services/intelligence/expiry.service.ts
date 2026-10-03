@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 export type ExpiryBucket = "EXPIRED" | "0-30" | "31-60" | "61-90" | "91-180" | "180+";
 

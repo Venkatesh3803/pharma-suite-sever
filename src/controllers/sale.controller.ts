@@ -7,8 +7,8 @@ import {
   listSaleReturns,
   salesSummary,
   posLookup as posLookupService,
-} from "../services/sale.service";
-import { ok } from "../utils/api";
+} from "../services/sale.service.js";
+import { ok } from "../utils/api.js";
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {

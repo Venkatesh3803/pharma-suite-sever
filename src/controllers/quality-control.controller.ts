@@ -1,12 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "../domain/errors";
+import { AppError } from "../domain/errors.js";
 import {
   createQualityCheck,
   listPendingBatches,
   listQualityChecks,
   updateQualityCheckStatus,
-} from "../services/quality-control.service";
-import { ok } from "../utils/api";
+} from "../services/quality-control.service.js";
+import { ok } from "../utils/api.js";
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {

@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 
 const PAGE_WIDTH = 595.28; // A4 portrait
 const PAGE_HEIGHT = 841.89;

@@ -5,9 +5,9 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
-import { config } from "./config";
-import { errorHandler, notFoundHandler } from "./middleware/error-handler";
-import apiRoutes from "./routes";
+import { config } from "./config/index.js";
+import { errorHandler, notFoundHandler } from "./middleware/error-handler.js";
+import apiRoutes from "./routes/index.js";
 
 export function createApp() {
     const app = express();

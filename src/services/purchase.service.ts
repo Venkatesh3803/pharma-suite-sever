@@ -1,8 +1,8 @@
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
-import { removeStock } from "./stock.service";
-import type { TxClient } from "./stock.service";
-import { postPurchaseEntry } from "./finance.service";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
+import { removeStock } from "./stock.service.js";
+import type { TxClient } from "./stock.service.js";
+import { postPurchaseEntry } from "./finance.service.js";
 
 export interface PurchaseItemInput {
   productId: string;

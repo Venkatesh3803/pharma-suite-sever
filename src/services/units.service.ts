@@ -1,4 +1,4 @@
-import { AppError } from "../domain/errors";
+import { AppError } from "../domain/errors.js";
 
 /**
  * Canonical unit configuration.

@@ -1,12 +1,12 @@
 import type { BillingCycle, PaymentMode, SubscriptionTier } from "@prisma/client";
-import { prisma } from "../lib/prisma";
-import { AppError } from "../domain/errors";
+import { prisma } from "../lib/prisma.js";
+import { AppError } from "../domain/errors.js";
 import {
   OFFLINE_PAYMENT_DETAILS,
   TIER_CONFIG,
   priceFor,
-} from "../domain/plans";
-import { sendSubscriptionNotice } from "./email/email.service";
+} from "../domain/plans.js";
+import { sendSubscriptionNotice } from "./email/email.service.js";
 
 const TRIAL_DAYS = 14;
 const GRACE_ACCESS_DAYS = 14;

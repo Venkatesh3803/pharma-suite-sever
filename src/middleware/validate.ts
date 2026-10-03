@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodSchema } from "zod";
-import { formatZodError } from "../domain/errors";
+import { formatZodError } from "../domain/errors.js";
 
 export function validateBody(schema: ZodSchema) {
     return (req: Request, res: Response, next: NextFunction): void => {
